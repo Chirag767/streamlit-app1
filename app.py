@@ -3,52 +3,39 @@ import cv2
 import numpy as np
 from PIL import Image
 
-def mock_api_call(file):
-    return {"message": "File received", "filename": file.name}
+st.title("Object Identification & Live Feed")
 
-st.title("Object Identification")
-
-# --- IMAGE UPLOAD SECTION ---
+# Section: Upload an Image
 st.header("Upload an Image")
-uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "png", "jpeg"])
-if uploaded_file is not None:
-    image = Image.open(uploaded_file)
+uploaded_image = st.file_uploader("Choose an image...", type=["jpg", "png", "jpeg"])
+if uploaded_image:
+    image = Image.open(uploaded_image)
     st.image(image, caption="Uploaded Image", use_column_width=True)
-    response = mock_api_call(uploaded_file)
-    st.write("Response:", response)
 
-# --- VIDEO UPLOAD SECTION ---
+# Section: Upload a Video
 st.header("Upload a Video")
 uploaded_video = st.file_uploader("Choose a video...", type=["mp4", "avi", "mov"])
-if uploaded_video is not None:
+if uploaded_video:
     st.video(uploaded_video)
-    response = mock_api_call(uploaded_video)
-    st.write("Response:", response)
 
-# --- LIVE FEED SECTION ---
-st.header("Live Camera Feed")
+# Section: Live Webcam Feed
+st.header("Live Webcam Feed")
 
-# Start the webcam
-video_capture = cv2.VideoCapture(0)  # 0 for default webcam
+def live_feed():
+    cap = cv2.VideoCapture(0)  # Open webcam (0 = default camera)
+    stframe = st.empty()  # Create a placeholder for video stream
 
-# Create a Streamlit empty container for the feed
-live_feed = st.empty()
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            st.error("Failed to capture video.")
+            break
 
-while video_capture.isOpened():
-    ret, frame = video_capture.read()
-    if not ret:
-        st.warning("Webcam not accessible.")
-        break
-    
-    # Convert frame to RGB (OpenCV uses BGR by default)
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    
-    # Display the live feed
-    live_feed.image(frame, channels="RGB", use_column_width=True)
-    
-    # Stop the loop when user closes the app
-    if st.button("Stop Live Feed"):
-        break
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Convert BGR to RGB
+        img = Image.fromarray(frame)  # Convert frame to PIL Image
+        stframe.image(img, caption="Live Feed", use_column_width=True)  # Display frame
 
-video_capture.release()
-#cv2.destroyAllWindows()
+    cap.release()
+
+if st.button("Start Live Feed"):
+    live_feed()
