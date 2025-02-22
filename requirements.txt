@@ -1,7 +1,3 @@
 streamlit
-pandas
-numpy
-requests
-opencv-python
 pillow
-matplotlib
+requests
