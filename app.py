@@ -3,6 +3,17 @@ import requests
 import io
 from PIL import Image
 
+st.set_page_config(page_title="Object Identification", page_icon="🔍", layout="wide", initial_sidebar_state="collapsed")
+
+hide_streamlit_style = """
+    <style>
+    #MainMenu {visibility: hidden;}  /* Hides the top-right menu */
+    footer {visibility: hidden;}  /* Hides the "Made with Streamlit" footer */
+    header {visibility: hidden;}  /* Hides the top Streamlit header */
+    </style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
 def mock_api_call(file):
     return {"message": "File received", "filename": file.name}
 
