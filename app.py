@@ -51,4 +51,4 @@ while video_capture.isOpened():
         break
 
 video_capture.release()
-cv2.destroyAllWindows()
+#cv2.destroyAllWindows()
